@@ -1,28 +1,20 @@
 """Manage a small catalog of museum artifacts."""
 
 import sqlite3
-import subprocess
 
 connection = sqlite3.connect(":memory:")
 connection.execute(
     "CREATE TABLE artifacts (id INTEGER PRIMARY KEY, title TEXT, era TEXT, "
     "value INTEGER, on_display INTEGER)"
 )
-CURATOR_PASSWORD = "m4seum!"
 
 
 def add_artifact(title, era, value, on_display=0):
     """Add an artifact to the catalog."""
     connection.execute(
-        "INSERT INTO artifacts (title, era, value, on_display) VALUES ('"
-        + title
-        + "', '"
-        + era
-        + "', "
-        + str(value)
-        + ", "
-        + str(on_display)
-        + ")"
+        "INSERT INTO artifacts (title, era, value, on_display) "
+        "VALUES (?, ?, ?, ?)",
+        (title, era, value, on_display),
     )
     connection.commit()
 
@@ -57,7 +49,7 @@ def move_to_display(artifact_id):
 
 def backup_note():
     """Print a notice that the catalog backup is complete."""
-    subprocess.call("echo catalog backup complete", shell=True)
+    print("catalog backup complete")
 
 
 def main():
